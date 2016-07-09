@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\tracey">
+      <UniqueIdentifier>{ad196275-59ed-48c3-b04e-c205acabf334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Boot">
+      <UniqueIdentifier>{6204af4b-800e-4518-9cec-6c251e18260e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render">
+      <UniqueIdentifier>{ba4aa413-ede5-489a-ab39-9f512a2ca649}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\DemoApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Boot\App.cpp">
+      <Filter>Source Files\Boot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tracey\tracey.cpp">
+      <Filter>Source Files\tracey</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Render\OpenGLCommon.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Render\Shader.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Render\ShaderShared.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Render\Framebuffer.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Render\gl_core_2_1.c">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Render\OpenGL21.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Render\OpenGL41.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Render\Primitives.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\DemoApp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Boot\App.h">
+      <Filter>Source Files\Boot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tracey\tracey.hpp">
+      <Filter>Source Files\tracey</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Boot\Includes.h">
+      <Filter>Source Files\Boot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Render\OpenGLCommon.h">
+      <Filter>Source Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Render\Shader.h">
+      <Filter>Source Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Render\ShaderShared.h">
+      <Filter>Source Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Render\Framebuffer.h">
+      <Filter>Source Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Render\gl_core_2_1.h">
+      <Filter>Source Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Render\OpenGL21.h">
+      <Filter>Source Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Render\OpenGL41.h">
+      <Filter>Source Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Render\Primitives.h">
+      <Filter>Source Files\Render</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

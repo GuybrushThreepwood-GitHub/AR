@@ -6,6 +6,7 @@
 
 #include <opencv2/core/opengl.hpp>
 #include <opencv2/core/ocl.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "aruco.h"
@@ -40,6 +41,8 @@ class DemoApp : public core::app::App
 		aruco::MarkerDetector m_PPDetector;
 		std::vector<aruco::Marker> m_Markers;
 
+		float m_ArucoProjMat[16];
+		float m_ArucoMdlViewMat[16];
 		GLuint m_VideoTexture;
 };
 

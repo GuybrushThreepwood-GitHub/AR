@@ -18,6 +18,9 @@
     <Filter Include="Source Files\Render">
       <UniqueIdentifier>{ba4aa413-ede5-489a-ab39-9f512a2ca649}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Util">
+      <UniqueIdentifier>{d339971d-2aeb-46df-9c97-d7a58579b656}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
@@ -56,6 +59,9 @@
     <ClCompile Include="..\..\src\Render\Primitives.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Util\ArucoUtils.cpp">
+      <Filter>Source Files\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\DemoApp.h">
@@ -93,6 +99,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Render\Primitives.h">
       <Filter>Source Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Util\ArucoUtils.h">
+      <Filter>Source Files\Util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

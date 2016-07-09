@@ -96,6 +96,7 @@
     <ClCompile Include="..\..\src\Render\Shader.cpp" />
     <ClCompile Include="..\..\src\Render\ShaderShared.cpp" />
     <ClCompile Include="..\..\src\tracey\tracey.cpp" />
+    <ClCompile Include="..\..\src\Util\ArucoUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Boot\App.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="..\..\src\Render\Shader.h" />
     <ClInclude Include="..\..\src\Render\ShaderShared.h" />
     <ClInclude Include="..\..\src\tracey\tracey.hpp" />
+    <ClInclude Include="..\..\src\Util\ArucoUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

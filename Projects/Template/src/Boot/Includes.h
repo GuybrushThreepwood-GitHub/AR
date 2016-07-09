@@ -82,5 +82,7 @@
 #include "Render/Framebuffer.h"
 #include "Render/Primitives.h"
 
+#include "Util/ArucoUtils.h"
+
 #endif // __INCLUDES_H__
 

@@ -15,6 +15,10 @@ namespace core
 					m_Tokens.clear();
 				}
 
+				~CmdParser(){
+					m_Tokens.clear();
+				}
+
 				CmdParser(int &argc, char **argv){
 					Create(argc, argv);
 				}

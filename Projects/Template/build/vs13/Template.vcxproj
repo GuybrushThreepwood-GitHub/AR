@@ -85,7 +85,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Boot\App.cpp" />
-    <ClCompile Include="..\..\src\DemoApp.cpp" />
+    <ClCompile Include="..\..\src\DemoAppGLSL.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\Render\Framebuffer.cpp" />
     <ClCompile Include="..\..\src\Render\gl_core_2_1.c" />
@@ -101,7 +101,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\Boot\App.h" />
     <ClInclude Include="..\..\src\Boot\Includes.h" />
-    <ClInclude Include="..\..\src\DemoApp.h" />
+    <ClInclude Include="..\..\src\DemoAppGLSL.h" />
     <ClInclude Include="..\..\src\Render\Framebuffer.h" />
     <ClInclude Include="..\..\src\Render\gl_core_2_1.h" />
     <ClInclude Include="..\..\src\Render\OpenGL21.h" />

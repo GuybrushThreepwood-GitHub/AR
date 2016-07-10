@@ -46,6 +46,8 @@ class DemoApp : public core::app::App
 		GLint m_TextureSampler;
 		GLint m_VertexAttr;
 
+		float m_ArucoProjMat[16];
+		float m_ArucoMdlViewMat[16];
 		renderer::Primitives* m_pPrimitivesDraw;
 };
 

@@ -3,7 +3,8 @@
 	File: main.cpp
 =====================================================================*/
 
-#include "DemoApp.h"
+//#include "DemoApp.h"
+#include "DemoAppGLSL.h"
 
 int SDL_main(int argc, char *argv[])
 {

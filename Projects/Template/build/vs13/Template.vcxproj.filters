@@ -26,9 +26,6 @@
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\DemoApp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Boot\App.cpp">
       <Filter>Source Files\Boot</Filter>
     </ClCompile>
@@ -62,11 +59,11 @@
     <ClCompile Include="..\..\src\Util\ArucoUtils.cpp">
       <Filter>Source Files\Util</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\DemoAppGLSL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\DemoApp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Boot\App.h">
       <Filter>Source Files\Boot</Filter>
     </ClInclude>
@@ -102,6 +99,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Util\ArucoUtils.h">
       <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\DemoAppGLSL.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

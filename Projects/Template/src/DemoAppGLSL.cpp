@@ -5,7 +5,7 @@
 
 #include "Boot/Includes.h"
 
-#include "DemoApp.h"
+#include "DemoAppGLSL.h"
 
 namespace
 {
@@ -24,10 +24,6 @@ namespace
 	const int CAMERA_CAPTURE_WIDTH = 640;
 	const int CAMERA_CAPTURE_HEIGHT = 480;
 }
-
-void GetCameraProjectionMatrix(aruco::CameraParameters params, cv::Size orgImgSize, cv::Size size, float proj_matrix[16], float gnear, float gfar, bool invert);
-void argConvGLcpara2(float cparam[3][4], int width, int height, float gnear, float gfar, float m[16], bool invert);
-int arParamDecompMat(float source[3][4], float cpara[3][4], float trans[3][4]);
 
 DemoApp::DemoApp()
 {
@@ -106,8 +102,6 @@ int DemoApp::Initialise()
 
 	m_RGBImage.create(m_BGRImage.size(), CV_8UC3);
 
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);      // 4-byte pixel alignment
-
 	// create texture for video 
 	glGenTextures(1, &m_VideoTexture);
 	renderer::OpenGL::GetInstance()->BindTexture(m_VideoTexture);
@@ -165,16 +159,20 @@ int DemoApp::Update()
 		//m_VideoCapturer >> m_BGRImage;
 		m_VideoCapturer.read(m_BGRImage);
 
-		cv::GaussianBlur( m_BGRImage, m_BGRImage, cv::Size(5,5), 1.5, 1.5 );
+		cv::GaussianBlur(m_BGRImage, m_BGRImage, cv::Size(9, 9), 1.5, 1.5);
 
 		// by deafult, opencv works in BGR, so we must convert to RGB because OpenGL in windows prefer
-		cv::cvtColor(m_BGRImage, m_RGBImage, CV_BGR2RGB);
+		cv::cvtColor(m_BGRImage, m_BGRImage, CV_BGR2RGB);
 
 		// remove distorion in image
 		cv::undistort(m_BGRImage, m_RGBImage, m_CameraParameters.CameraMatrix, m_CameraParameters.Distorsion);
 
 		//detect markers
-		m_PPDetector.detect(m_BGRImage, m_Markers, m_CameraParameters.CameraMatrix, cv::Mat(), TheMarkerSize, false);
+		m_PPDetector.detect(m_RGBImage, m_Markers, m_CameraParameters.CameraMatrix, cv::Mat(), TheMarkerSize, false);
+
+		util::GetCameraProjectionMatrix(m_CameraParameters, m_BGRImage.size(), m_BGRImage.size(), m_ArucoProjMat, 0.05f, 10.0f, false);
+
+		cv::flip(m_BGRImage, m_BGRImage, 0);
 
 		timeToRead = 0.0f;
 	}
@@ -196,19 +194,15 @@ int DemoApp::Render()
 	renderer::OpenGL::GetInstance()->SetupOrthographicView(m_WindowDims.x, m_WindowDims.y, true);
 	//m_FBOFinal.RenderToScreen();
 
-	float finalMatrix[16];
-	GetCameraProjectionMatrix(m_CameraParameters, m_BGRImage.size(), m_BGRImage.size(), finalMatrix, 1.0f, 100.0f, true);
-
-	glm::mat4 camView = glm::make_mat4(finalMatrix);
+	glm::mat4 camView = glm::make_mat4(m_ArucoProjMat);
 	renderer::OpenGL::GetInstance()->SetProjectionMatrix(camView);
 	renderer::OpenGL::GetInstance()->SetViewMatrix(glm::mat4(1.0f));
 
-	double modelview_matrix[16];
 	for (unsigned int m = 0; m < m_Markers.size(); m++)
 	{
-		m_Markers[m].glGetModelViewMatrix(modelview_matrix);
+		util::GetMarkerModelViewMatrix(m_Markers[m], m_ArucoMdlViewMat);
 
-		glm::mat4 modelView = glm::make_mat4(modelview_matrix);
+		glm::mat4 modelView = glm::make_mat4(m_ArucoMdlViewMat);
 		renderer::OpenGL::GetInstance()->SetModelMatrix(modelView);
 
 		m_pPrimitivesDraw->DrawLine(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(TheMarkerSize, 0.0f, 0.0f), glm::vec4(1,0,0,1) );
@@ -255,8 +249,6 @@ void DemoApp::DrawVideoToTexture()
 {
 	renderer::OpenGL::GetInstance()->UseProgram(m_FBOFinal.GetProgram());
 
-	//renderer::OpenGL::GetInstance()->SetCullState(false, GL_FRONT_AND_BACK);
-
 	renderer::OpenGL::GetInstance()->DepthMode(false, GL_ALWAYS);
 	renderer::OpenGL::GetInstance()->BlendMode(false, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -271,7 +263,7 @@ void DemoApp::DrawVideoToTexture()
 	// no PBO
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_BGRImage.size().width, m_BGRImage.size().height, 0, GL_BGR, GL_UNSIGNED_BYTE, m_BGRImage.ptr(0));
 	//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_RGBImage.size().width, m_RGBImage.size().height, GL_RGB, GL_UNSIGNED_BYTE, m_RGBImage.ptr(0));
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_BGRImage.size().width, m_BGRImage.size().height, GL_BGR, GL_UNSIGNED_BYTE, m_BGRImage.ptr(0));
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_BGRImage.size().width, m_BGRImage.size().height, GL_RGB, GL_UNSIGNED_BYTE, m_BGRImage.ptr(0));
 
 	// render fullscreen quad with video texture
 	if (m_VertexAttr != -1)
@@ -289,164 +281,6 @@ void DemoApp::DrawVideoToTexture()
 		glDisableVertexAttribArray(m_VertexAttr);
 	}
 
-	//renderer::OpenGL::GetInstance()->SetCullState(true, GL_BACK);
-
-
-	/*renderer::OpenGL::GetInstance()->DepthMode(false, GL_ALWAYS);
-	renderer::OpenGL::GetInstance()->BlendMode(false, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	renderer::OpenGL::GetInstance()->SetNearFarClip(-100.0f, 100.0f);
-	renderer::OpenGL::GetInstance()->SetupOrthographicView(m_WindowDims.x, m_WindowDims.y, true);
-
-	glDrawPixels(m_BGRImage.size().width, m_BGRImage.size().height, GL_BGR, GL_UNSIGNED_BYTE, m_BGRImage.ptr(0));*/
-
 	GL_CHECK
-}
-
-void GetCameraProjectionMatrix(aruco::CameraParameters params, cv::Size orgImgSize, cv::Size size, float proj_matrix[16], float gnear, float gfar, bool invert)
-{
-	//if (cv::countNonZero(Distorsion) != 0)
-	//	std::cerr << "CameraParameters::glGetProjectionMatrix :: The camera has distortion coefficients " << __FILE__ << " " << __LINE__ << endl;
-	if (params.isValid() == false)
-	{
-		return;
-		//throw cv::Exception(9100, "invalid camera parameters", "CameraParameters::glGetProjectionMatrix", __FILE__, __LINE__);
-	}
-
-	// Deterime the rsized info
-	float Ax = float(size.width) / float(orgImgSize.width);
-	float Ay = float(size.height) / float(orgImgSize.height);
-	float _fx = params.CameraMatrix.at< float >(0, 0) * Ax;
-	float _cx = params.CameraMatrix.at< float >(0, 2) * Ax;
-	float _fy = params.CameraMatrix.at< float >(1, 1) * Ay;
-	float _cy = params.CameraMatrix.at< float >(1, 2) * Ay;
-	float cparam[3][4] = { { _fx, 0.0f, _cx, 0.0f }, { 0.0f, _fy, _cy, 0.0f }, { 0.0f, 0.0f, 1.0f, 0.0f } };
-
-	argConvGLcpara2(cparam, size.width, size.height, gnear, gfar, proj_matrix, invert);
-}
-
-void argConvGLcpara2(float cparam[3][4], int width, int height, float gnear, float gfar, float m[16], bool invert)
-{
-
-	float icpara[3][4];
-	float trans[3][4];
-	float p[3][3], q[4][4];
-	int i, j;
-
-	cparam[0][2] *= -1.0f;
-	cparam[1][2] *= -1.0f;
-	cparam[2][2] *= -1.0f;
-
-	if (arParamDecompMat(cparam, icpara, trans) < 0)
-	{
-		return;//throw cv::Exception(9002, "parameter error", "MarkerDetector::argConvGLcpara2", __FILE__, __LINE__);
-	}
-
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 3; j++) {
-			p[i][j] = icpara[i][j] / icpara[2][2];
-		}
-	}
-	q[0][0] = (2.0f * p[0][0] / width);
-	q[0][1] = (2.0f * p[0][1] / width);
-	q[0][2] = ((2.0f * p[0][2] / width) - 1.0f);
-	q[0][3] = 0.0f;
-
-	q[1][0] = 0.0f;
-	q[1][1] = (2.0f * p[1][1] / height);
-	q[1][2] = ((2.0f * p[1][2] / height) - 1.0f);
-	q[1][3] = 0.0f;
-
-	q[2][0] = 0.0f;
-	q[2][1] = 0.0f;
-	q[2][2] = (gfar + gnear) / (gfar - gnear);
-	q[2][3] = -2.0f * gfar * gnear / (gfar - gnear);
-
-	q[3][0] = 0.0f;
-	q[3][1] = 0.0f;
-	q[3][2] = 1.0f;
-	q[3][3] = 0.0f;
-
-	for (i = 0; i < 4; i++) {
-		for (j = 0; j < 3; j++) {
-			m[i + j * 4] = q[i][0] * trans[0][j] + q[i][1] * trans[1][j] + q[i][2] * trans[2][j];
-		}
-		m[i + 3 * 4] = q[i][0] * trans[0][3] + q[i][1] * trans[1][3] + q[i][2] * trans[2][3] + q[i][3];
-	}
-
-	if (!invert) {
-		m[13] = -m[13];
-		m[1] = -m[1];
-		m[5] = -m[5];
-		m[9] = -m[9];
-	}
-}
-
-float norm(float a, float b, float c) { return (sqrt(a * a + b * b + c * c)); }
-
-float dot(float a1, float a2, float a3, float b1, float b2, float b3) { return (a1 * b1 + a2 * b2 + a3 * b3); }
-
-int arParamDecompMat(float source[3][4], float cpara[3][4], float trans[3][4])
-{
-	int r, c;
-	float Cpara[3][4];
-	float rem1, rem2, rem3;
-
-	if (source[2][3] >= 0) {
-		for (r = 0; r < 3; r++) {
-			for (c = 0; c < 4; c++) {
-				Cpara[r][c] = source[r][c];
-			}
-		}
-	}
-	else {
-		for (r = 0; r < 3; r++) {
-			for (c = 0; c < 4; c++) {
-				Cpara[r][c] = -(source[r][c]);
-			}
-		}
-	}
-
-	for (r = 0; r < 3; r++) {
-		for (c = 0; c < 4; c++) {
-			cpara[r][c] = 0.0f;
-		}
-	}
-
-	cpara[2][2] = norm(Cpara[2][0], Cpara[2][1], Cpara[2][2]);
-	trans[2][0] = Cpara[2][0] / cpara[2][2];
-	trans[2][1] = Cpara[2][1] / cpara[2][2];
-	trans[2][2] = Cpara[2][2] / cpara[2][2];
-	trans[2][3] = Cpara[2][3] / cpara[2][2];
-
-	cpara[1][2] = dot(trans[2][0], trans[2][1], trans[2][2], Cpara[1][0], Cpara[1][1], Cpara[1][2]);
-	rem1 = Cpara[1][0] - cpara[1][2] * trans[2][0];
-	rem2 = Cpara[1][1] - cpara[1][2] * trans[2][1];
-	rem3 = Cpara[1][2] - cpara[1][2] * trans[2][2];
-	cpara[1][1] = norm(rem1, rem2, rem3);
-	trans[1][0] = rem1 / cpara[1][1];
-	trans[1][1] = rem2 / cpara[1][1];
-	trans[1][2] = rem3 / cpara[1][1];
-
-	cpara[0][2] = dot(trans[2][0], trans[2][1], trans[2][2], Cpara[0][0], Cpara[0][1], Cpara[0][2]);
-	cpara[0][1] = dot(trans[1][0], trans[1][1], trans[1][2], Cpara[0][0], Cpara[0][1], Cpara[0][2]);
-	rem1 = Cpara[0][0] - cpara[0][1] * trans[1][0] - cpara[0][2] * trans[2][0];
-	rem2 = Cpara[0][1] - cpara[0][1] * trans[1][1] - cpara[0][2] * trans[2][1];
-	rem3 = Cpara[0][2] - cpara[0][1] * trans[1][2] - cpara[0][2] * trans[2][2];
-	cpara[0][0] = norm(rem1, rem2, rem3);
-	trans[0][0] = rem1 / cpara[0][0];
-	trans[0][1] = rem2 / cpara[0][0];
-	trans[0][2] = rem3 / cpara[0][0];
-
-	trans[1][3] = (Cpara[1][3] - cpara[1][2] * trans[2][3]) / cpara[1][1];
-	trans[0][3] = (Cpara[0][3] - cpara[0][1] * trans[1][3] - cpara[0][2] * trans[2][3]) / cpara[0][0];
-
-	for (r = 0; r < 3; r++) {
-		for (c = 0; c < 3; c++) {
-			cpara[r][c] /= cpara[2][2];
-		}
-	}
-
-	return 0;
 }
 

@@ -27,6 +27,12 @@ namespace renderer
 			/// \param colour - colour of the colour
 			void DrawLine(const glm::vec3 &start, const glm::vec3 &end, const glm::vec4& colour);
 
+			/// Bind - 
+			void Bind()			{ m_PrimitiveShader.Bind();  }
+
+			/// UnBind - 
+			void UnBind()		{ m_PrimitiveShader.UnBind(); }
+
 		private:
 			renderer::Shader m_PrimitiveShader;
 			GLint m_ModelViewProjectionMatrix;

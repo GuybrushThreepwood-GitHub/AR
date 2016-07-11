@@ -110,7 +110,7 @@ int App::Execute(int windowWidth, int windowHeight, int frameWidth, int frameHei
 			flags |= SDL_WINDOW_FULLSCREEN;
 
 		m_Window = SDL_CreateWindow("SDL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_WindowDims.x, m_WindowDims.y, flags);
-		if (m_Window == NULL)
+		if (m_Window == nullptr)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			return 1;
@@ -118,7 +118,7 @@ int App::Execute(int windowWidth, int windowHeight, int frameWidth, int frameHei
 		else
 		{
 			m_Context = SDL_GL_CreateContext(m_Window);
-			if (m_Context == NULL)
+			if (m_Context == nullptr)
 			{
 				printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
 				return 1;
@@ -196,6 +196,8 @@ int App::Execute(int windowWidth, int windowHeight, int frameWidth, int frameHei
 				GL_CHECK
 
 				SDL_GL_SwapWindow(m_Window);
+
+				SDL_Delay(1);
 
 				title = "FPS: " + std::to_string(m_FPS) + " | FrameTime: " + std::to_string(m_ElapsedTime);
 				SDL_SetWindowTitle(m_Window, title.c_str());

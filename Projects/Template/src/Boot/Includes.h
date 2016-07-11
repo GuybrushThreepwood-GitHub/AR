@@ -31,17 +31,18 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <iterator>
+#include <istream>
 #include <map> // added to stop debug new operator causing compile problems 
 #include <vector>
 #include <string>
 #include <array>
 #include <queue>
 #include <memory>
+#include <thread>
+#include <mutex>
+#include <chrono>
 
-#include <iostream>
-#include <fstream>
-#include <iterator>
-#include <istream>
 #include <sys/stat.h>
 
 // opengl core
@@ -67,6 +68,15 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
+// aruco 
+#include "aruco.h"
+
+// opencv
+#include <opencv2/core/opengl.hpp>
+#include <opencv2/core/ocl.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
 // renderer
 #include "Render/OpenGLCommon.h"
 
@@ -81,6 +91,9 @@
 #include "Render/Shader.h"
 #include "Render/Framebuffer.h"
 #include "Render/Primitives.h"
+
+#include "Util/IState.h"
+#include "Util/StateManager.h"
 
 #include "Util/ArucoUtils.h"
 

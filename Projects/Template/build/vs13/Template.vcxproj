@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\ArucoPlayground.cpp" />
     <ClCompile Include="..\..\src\Boot\App.cpp" />
     <ClCompile Include="..\..\src\DemoAppGLSL.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
@@ -97,8 +98,10 @@
     <ClCompile Include="..\..\src\Render\ShaderShared.cpp" />
     <ClCompile Include="..\..\src\tracey\tracey.cpp" />
     <ClCompile Include="..\..\src\Util\ArucoUtils.cpp" />
+    <ClCompile Include="..\..\src\Util\StateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\ArucoPlayground.h" />
     <ClInclude Include="..\..\src\Boot\App.h" />
     <ClInclude Include="..\..\src\Boot\Includes.h" />
     <ClInclude Include="..\..\src\DemoAppGLSL.h" />
@@ -112,6 +115,8 @@
     <ClInclude Include="..\..\src\Render\ShaderShared.h" />
     <ClInclude Include="..\..\src\tracey\tracey.hpp" />
     <ClInclude Include="..\..\src\Util\ArucoUtils.h" />
+    <ClInclude Include="..\..\src\Util\IState.h" />
+    <ClInclude Include="..\..\src\Util\StateManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
